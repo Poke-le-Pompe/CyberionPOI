@@ -1,0 +1,10 @@
+name: CyberionPOI
+main: com.poke.cyberion.poi.CyberionPlugin
+version: 0.5
+api-version: 1.16
+author: The_Poke
+depend:
+commands:
+  POI:
+      description: Permet de gerer les POI
+      usage: /POI [set, remove, list, reload, book]
