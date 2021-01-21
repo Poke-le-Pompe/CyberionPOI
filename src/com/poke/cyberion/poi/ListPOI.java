@@ -18,6 +18,8 @@ public class ListPOI implements Iterable<POI> {
 	}
 
 	public void loadConfig() {
+		
+		list = new ArrayList<POI>();
 		FileConfiguration config = plugin.getPoiConfig();
 
 		if (!config.contains("poi.0")) {
@@ -87,6 +89,19 @@ public class ListPOI implements Iterable<POI> {
 		}
 		
 	}
+	
+	public void setDesc(String name, String desc) {
+		POI poi = getPOIbyName(name);
+		poi.setDesc(desc);
+		saveConfig();
+	}
+	
+	public void setActivation(String name, String act) {
+		POI poi = getPOIbyName(name);
+		poi.setActivationMessage(act);
+		saveConfig();
+	}
+	
 
 	@Override
 	public Iterator<POI> iterator() {

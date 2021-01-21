@@ -23,6 +23,8 @@ public class ListVisited {
 
 	@SuppressWarnings("unchecked")
 	public void loadConfig() {
+		
+		this.visitedMap = new HashMap<String, ArrayList<String>>();
 		FileConfiguration config = plugin.getVisitedConfig();
 
 		if (!config.contains("players")) {
@@ -36,7 +38,7 @@ public class ListVisited {
 
 			visitedMap.put(id, al);
 
-			System.out.println(visitedMap);
+			//System.out.println(visitedMap);
 
 		}
 

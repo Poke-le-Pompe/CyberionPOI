@@ -1,6 +1,7 @@
 package com.poke.cyberion.poi.listeners;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -49,9 +50,12 @@ public class ClickPOIListener implements Listener {
 			}
 
 			if (listVisited.playerAlreadyVisited(player, clickedPoi)) {
-				player.sendMessage(ChatColor.YELLOW + "Vous avez déjà trouvé ce point d'intérêt !");
+				player.sendMessage(ChatColor.RED + "Vous avez déjà trouvé ce point d'intérêt !");
+				player.playSound(player.getLocation(), Sound.ITEM_CROSSBOW_SHOOT, 1f, 0.2f);
 			} else {
-				player.sendMessage(ChatColor.YELLOW + "Nouveau Point d'Intérêt découvert !");
+				player.sendMessage(ChatColor.AQUA + ""  + ChatColor.MAGIC + "#" + ChatColor.RESET + " " + ChatColor.YELLOW + "Nouveau Point d'Intérêt découvert !" + ChatColor.AQUA + " "  + ChatColor.MAGIC + "#");
+				player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1f, 2f);
+				
 				player.sendMessage(ChatColor.GREEN + clickedPoi.getActivationMessage());
 				plugin.getVisitedList().addToPlayerList(player, clickedPoi.getUuid());
 

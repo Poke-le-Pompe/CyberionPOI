@@ -11,7 +11,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.poke.cyberion.poi.commands.CPoi;
+import com.poke.cyberion.poi.commands.CommandPoi;
 import com.poke.cyberion.poi.listeners.BookItemListener;
 import com.poke.cyberion.poi.listeners.ClickPOIListener;
 import com.poke.cyberion.poi.listeners.SetPOIListener;
@@ -62,7 +62,7 @@ public class CyberionPlugin extends JavaPlugin {
 		 */
 
 		this.getCommand("POI").setTabCompleter(new PoiTabCompleter());
-		this.getCommand("POI").setExecutor(new CPoi());
+		this.getCommand("POI").setExecutor(new CommandPoi());
 
 		getServer().getPluginManager().registerEvents(new SetPOIListener(), this);
 		getServer().getPluginManager().registerEvents(new ClickPOIListener(), this);

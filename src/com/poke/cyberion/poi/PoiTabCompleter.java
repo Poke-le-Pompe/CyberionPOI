@@ -13,7 +13,7 @@ public class PoiTabCompleter implements TabCompleter {
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] arguments) {
 
-		String[] commands = { "set", "list", "book", "desc", "remove", "reload", "toggleBook" };
+		String[] commands = { "set", "list", "book", "setDesc", "setActivation", "remove", "reload", "toggleBook", "info" };
 		String[] empty = {};
 		List<String> listCommands = Arrays.asList(empty);
 
@@ -28,9 +28,11 @@ public class PoiTabCompleter implements TabCompleter {
 
 			case "remove":
 				return listNomsPOI();
-			case "desc":
+			case "setDesc":
 				return listNomsPOI();
-			case "infos":
+			case "setActivation":
+				return listNomsPOI();
+			case "info":
 				return listNomsPOI();
 
 			default:

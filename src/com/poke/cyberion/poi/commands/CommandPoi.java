@@ -11,7 +11,7 @@ import com.poke.cyberion.poi.CyberionUtil;
 import com.poke.cyberion.poi.ListPOI;
 import com.poke.cyberion.poi.POI;
 
-public class CPoi implements CommandExecutor {
+public class CommandPoi implements CommandExecutor {
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] arg) {
@@ -34,6 +34,8 @@ public class CPoi implements CommandExecutor {
 				return setCommand(sender, args);
 			case "remove":
 				return removeCommand(sender, args);
+			case "info":
+				return infoCommand(sender, args);
 			case "list":
 				return listCommand(sender, args);
 			case "reload":
@@ -42,6 +44,10 @@ public class CPoi implements CommandExecutor {
 				return bookCommand(sender, args);
 			case "toggleBook":
 				return toggleItemBookCommand(sender, args);
+			case "setDesc":
+				return setDescCommand(sender, args);
+			case "setActivation":
+				return setActivationCommand(sender, args);
 
 			default:
 				return false;
@@ -50,6 +56,60 @@ public class CPoi implements CommandExecutor {
 		}
 
 
+	}
+
+	private boolean infoCommand(CommandSender sender, String[] args) {
+		CyberionPlugin plugin = CyberionPlugin.getInstance();
+		ListPOI listPoi = plugin.getListPOI();
+		if (args.length >= 1) {
+
+			//get all args as a name
+			StringBuilder sb = new StringBuilder();
+			for (int i = 0; i < args.length; i++) {
+				sb.append(args[i]).append(" ");
+			}
+			String allArgs = sb.toString().trim();
+
+			// Check if the player actually has the permission required
+			if (sender.hasPermission(CyberionUtil.CYBERION_ADMIN_PERM)) {
+
+				if (sender instanceof Player) {
+					Player player = (Player) sender;
+
+					String name = allArgs;
+
+					//check if poi exist
+					if (!listPoi.nameExist(name)) {
+						player.sendMessage(CyberionUtil.getMessageHeader('c') + "POI inexistant !");
+						return false;
+					}
+					POI poi = listPoi.getPOIbyName(name);
+					
+					player.sendMessage(ChatColor.GOLD + "--------------------------------");
+					player.sendMessage(ChatColor.YELLOW +"Nom: " + ChatColor.LIGHT_PURPLE + poi.getName());
+					player.sendMessage(ChatColor.YELLOW +"Description: " + ChatColor.GREEN  + poi.getDesc());
+					player.sendMessage(ChatColor.YELLOW +"Message d'Activation: " + ChatColor.GREEN  + poi.getActivationMessage());
+					player.sendMessage(ChatColor.YELLOW +"Position: " + ChatColor.AQUA  + poi.getLoc().getBlockX() + " " + poi.getLoc().getBlockY() +" " + poi.getLoc().getBlockZ() + " (" + poi.getLoc().getWorld().getName() + ")" );
+					player.sendMessage(ChatColor.GOLD +"---------------------------------");
+					
+					return true;
+					
+				} else {
+					// Send the command sender a message telling them that only players can use this
+					sender.sendMessage(ChatColor.translateAlternateColorCodes('&',CyberionPlugin.getInternalConfig().getOnlyPlayersMessage()));
+
+					return false;
+				}
+			} else {
+
+				sender.sendMessage(ChatColor.translateAlternateColorCodes('&',CyberionPlugin.getInternalConfig().getNoPermMessage()));
+
+				return false;
+			}
+		}
+
+		sender.sendMessage(CyberionUtil.getMessageHeader() + "Indiquez l'ID du POI");
+		return false;
 	}
 
 	private boolean setCommand(CommandSender sender, String[] arg) {
@@ -76,8 +136,7 @@ public class CPoi implements CommandExecutor {
 					}
 
 					plugin.addSetter(player, allArgs);
-					player.sendMessage(CyberionUtil.getMessageHeader()
-							+ "Cliquez sur le bloc que vous voulez définir en tant que POI");
+					player.sendMessage(CyberionUtil.getMessageHeader() + "Cliquez sur le bloc que vous voulez définir en tant que POI");
 
 					return true;
 				} else {
@@ -103,6 +162,95 @@ public class CPoi implements CommandExecutor {
 		sender.sendMessage(CyberionUtil.getMessageHeader('c') + "Ajoutez un nom pour le POI");
 		return false;
 
+	}
+
+	private boolean setActivationCommand(CommandSender sender, String[] args) {
+		CyberionPlugin plugin = CyberionPlugin.getInstance();
+		ListPOI listPoi = plugin.getListPOI();
+
+		if (sender.hasPermission(CyberionUtil.CYBERION_ADMIN_PERM)) {
+			if (sender instanceof Player) {
+				Player player = (Player) sender;
+
+				StringBuilder sb = new StringBuilder();
+				for (int i = 0; i < args.length; i++) {
+					sb.append(args[i]).append(" ");
+				}
+				String allArgs = sb.toString().trim();
+
+				if (allArgs.matches(".+ ; .+")) {
+					String name = allArgs.substring(0, allArgs.indexOf(';')-1);
+					String act = allArgs.substring(allArgs.indexOf(';')+2);
+
+					if (!listPoi.nameExist(name)) {
+						player.sendMessage(CyberionUtil.getMessageHeader('c') + "POI inexistant !");
+						return false;
+					}
+
+					listPoi.setActivation(name, act);
+					player.sendMessage(CyberionUtil.getMessageHeader() + "Message d'activation du POI " + ChatColor.AQUA + name + ChatColor.YELLOW + " défini en " + ChatColor.AQUA + act);
+					return true;
+
+				} else {
+					return false;
+				}
+
+			} else {
+				// Send the command sender a message telling them that only players can use this
+				sender.sendMessage(ChatColor.translateAlternateColorCodes('&',CyberionPlugin.getInternalConfig().getOnlyPlayersMessage()));
+
+				return false;
+			}
+		}
+		return false;
+	}
+
+	private boolean setDescCommand(CommandSender sender, String[] args) {
+		CyberionPlugin plugin = CyberionPlugin.getInstance();
+		ListPOI listPoi = plugin.getListPOI();
+
+		if (sender.hasPermission(CyberionUtil.CYBERION_ADMIN_PERM)) {
+			if (sender instanceof Player) {
+				Player player = (Player) sender;
+
+
+				StringBuilder sb = new StringBuilder();
+				for (int i = 0; i < args.length; i++) {
+					sb.append(args[i]).append(" ");
+				}
+				String allArgs = sb.toString().trim();
+
+
+				if (allArgs.matches(".+ ; .+")) {
+					String name = allArgs.substring(0, allArgs.indexOf(';')-1);
+					String desc = allArgs.substring(allArgs.indexOf(';')+2);
+
+
+					//POI Inexistant
+					if (!listPoi.nameExist(name)) {
+						player.sendMessage(CyberionUtil.getMessageHeader('c') + "POI inexistant !");
+						return false;
+					}
+
+
+					listPoi.setDesc(name, desc);
+					player.sendMessage(CyberionUtil.getMessageHeader() + "Description du POI " + ChatColor.AQUA + name + ChatColor.YELLOW + " définie en " + ChatColor.AQUA + desc);
+					return true;
+
+				} else {
+					return false;
+				}
+
+			} else {
+				// Send the command sender a message telling them that only players can use this
+				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', CyberionPlugin.getInternalConfig().getOnlyPlayersMessage()));
+
+				return false;
+			}
+		}
+
+
+		return false;
 	}
 
 	private boolean listCommand(CommandSender sender, String[] arg) {
@@ -162,31 +310,6 @@ public class CPoi implements CommandExecutor {
 
 		return false;
 
-
-	}
-
-	private boolean reloadCommand(CommandSender sender, String[] arg) {
-		CyberionPlugin plugin = CyberionPlugin.getInstance();
-
-		if (sender.hasPermission(CyberionUtil.CYBERION_ADMIN_PERM)) {
-			if (sender instanceof Player) {
-				Player player = (Player) sender;
-
-				plugin.getListPOI().loadConfig();
-
-				player.sendMessage("Reload OK");
-
-				return true;
-			} else {
-
-				plugin.getListPOI().loadConfig();
-
-				sender.sendMessage(CyberionUtil.getMessageHeader() + "Reload OK");
-
-				return true;
-			}
-		}
-		return false;
 
 	}
 
@@ -258,13 +381,40 @@ public class CPoi implements CommandExecutor {
 				for(Player p : plugin.getServer().getOnlinePlayers()) {
 					p.getInventory().setItem(7, CyberionUtil.getBookItem());
 				}
-				
+
 			} else {
 				sender.sendMessage(CyberionUtil.getMessageHeader('c') + "Auto Give du Livre liste désactivé");
 			}
 
 			return true;
 
+		}
+		return false;
+
+	}
+
+	private boolean reloadCommand(CommandSender sender, String[] arg) {
+		CyberionPlugin plugin = CyberionPlugin.getInstance();
+
+		if (sender.hasPermission(CyberionUtil.CYBERION_ADMIN_PERM)) {
+
+			plugin.getListPOI().loadConfig();
+			plugin.getVisitedList().loadConfig();
+
+			if (sender instanceof Player) {
+				Player player = (Player) sender;
+
+				player.sendMessage(CyberionUtil.getMessageHeader() + "Reload terminé !");
+
+				return true;
+
+
+			} else {
+
+				sender.sendMessage(CyberionUtil.getMessageHeader() + "Reload terminé !");
+
+				return true;
+			}
 		}
 		return false;
 

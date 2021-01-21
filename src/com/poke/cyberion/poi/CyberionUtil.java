@@ -22,7 +22,7 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
  * are declaring it as final because there are only utility methods and we don't
  * want anyone accidentally extending this class
  * 
- * @author Cory Caron
+ * @author Poke
  */
 public final class CyberionUtil {
 
@@ -112,7 +112,9 @@ public final class CyberionUtil {
 		 * Text("Go to the spigot website!"))) .create();
 		 */
 
-		String text = ChatColor.translateAlternateColorCodes('&', "&lListe des Points d'intéret:\n");
+		int c_visited = 0;
+		int c_total = 0;
+		String text = "";
 
 		for (POI poi : listPoi) {
 
@@ -120,6 +122,7 @@ public final class CyberionUtil {
 
 			// check if visited
 			if (listVisited.playerAlreadyVisited(p, poi)) {
+				c_visited++;
 				checkMark = "\u2714";
 				// checkMark = ChatColor.translateAlternateColorCodes('&', "\n&2");
 			} else {
@@ -134,9 +137,11 @@ public final class CyberionUtil {
 				desc = poi.getDesc();
 			}
 
+			c_total++;
 			text = text + "\n" + checkMark + " " + desc;
 		}
-
+		
+		text =" " + c_visited + "/" + c_total + " points trouvés\n" + text;
 		String textPage = "";
 		int linecount = 0;
 		for (String line : getLines(text)) {
@@ -163,7 +168,7 @@ public final class CyberionUtil {
 		}
 
 		// set the title and author of this book
-		bookMeta.setTitle("Liste des Points d'intéret");
+		bookMeta.setTitle("Liste des Points d'Intérêt");
 		bookMeta.setAuthor("Club Minecraft");
 
 		// update the ItemStack with this new meta
@@ -172,25 +177,25 @@ public final class CyberionUtil {
 		p.openBook(book);
 
 	}
-	
+
 	public static ItemStack getBookItem() {
 		ItemStack book = new ItemStack(Material.BOOK);
 		ItemMeta bookMeta = book.getItemMeta();
-		CyberionPlugin plugin = CyberionPlugin.getInstance();
-		
-		bookMeta.setDisplayName(ChatColor.AQUA + "Liste des Points d'intérêt");
+		//CyberionPlugin plugin = CyberionPlugin.getInstance();
+
+		bookMeta.setDisplayName(ChatColor.AQUA + "" + ChatColor.BOLD + "Liste des Points d'Intérêt");
 		bookMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 		bookMeta.addEnchant(Enchantment.SILK_TOUCH, 1, true);
-		
-		ListVisited listVisited = plugin.getVisitedList();
-		ListPOI listPoi = plugin.getListPOI();
-		
-		
+
+		//ListVisited listVisited = plugin.getVisitedList();
+		//ListPOI listPoi = plugin.getListPOI();
+
+
 		book.setItemMeta(bookMeta);
-		
+
 		return book;
 	}
-	
+
 
 	private static ArrayList<String> getLines(String rawText) {
 		// Note that the only flaw with using MinecraftFont is that it can't account for
