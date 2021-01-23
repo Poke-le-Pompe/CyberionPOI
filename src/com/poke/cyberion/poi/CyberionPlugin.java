@@ -10,7 +10,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-
+import org.bukkit.scheduler.BukkitRunnable;
 import com.poke.cyberion.poi.commands.CommandPoi;
 import com.poke.cyberion.poi.listeners.BookItemListener;
 import com.poke.cyberion.poi.listeners.ClickPOIListener;
@@ -44,29 +44,37 @@ public class CyberionPlugin extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		plugin = this;
-		config = new Config();
-		createPoiConfig();
-		createVisitedConfig();
 
-		poiSetters = new HashMap<Player, String>();
-		setVisitedList(new ListVisited(this));
-		listPOI = new ListPOI(this);
 
-		CyberionUtil.registerPermissions();
+		new BukkitRunnable() {
 
-		/*
-		 * this.getCommand("setPOI").setExecutor(new CsetPOI());
-		 * this.getCommand("listPOI").setExecutor(new ClistPOI());
-		 * this.getCommand("removePOI").setExecutor(new CremovePOI());
-		 * this.getCommand("reloadPOI").setExecutor(new CreloadPOI());
-		 */
+			@Override
+			public void run() {
+				CyberionPlugin plugin = CyberionPlugin.getInstance();
+				config = new Config();
+				plugin.createPoiConfig();
+				plugin.createVisitedConfig();
 
-		this.getCommand("POI").setTabCompleter(new PoiTabCompleter());
-		this.getCommand("POI").setExecutor(new CommandPoi());
+				poiSetters = new HashMap<Player, String>();
+				setVisitedList(new ListVisited(plugin));
+				listPOI = new ListPOI(plugin);
 
-		getServer().getPluginManager().registerEvents(new SetPOIListener(), this);
-		getServer().getPluginManager().registerEvents(new ClickPOIListener(), this);
-		getServer().getPluginManager().registerEvents(new BookItemListener(), this);
+				CyberionUtil.registerPermissions();
+
+				plugin.getCommand("POI").setTabCompleter(new PoiTabCompleter());
+				plugin.getCommand("POI").setExecutor(new CommandPoi());
+
+				plugin.getServer().getPluginManager().registerEvents(new SetPOIListener(), plugin);
+				plugin.getServer().getPluginManager().registerEvents(new ClickPOIListener(), plugin);
+				plugin.getServer().getPluginManager().registerEvents(new BookItemListener(), plugin);
+				
+				ParticlesRunnable br = new ParticlesRunnable();
+				br.runTaskTimer(plugin, 30, 30);
+
+			}
+
+		}.runTaskLater(this, 1);
+
 
 	}
 
@@ -74,50 +82,19 @@ public class CyberionPlugin extends JavaPlugin {
 	@Override
 	public void onDisable() {
 		CyberionUtil.unregisterPermissions();
+		for (POI poi : listPOI) {
+			poi.getHolo().despawn();
+		}
 
 	}
 
-	public Logger getLogger() {
-		return logger;
+	public void reloadAllConfigs() {
+		createPoiConfig();
+		createVisitedConfig();
+		listPOI.loadConfig();
+		visitedList.loadConfig();
+		config.loadConfig();
 	}
-
-	public HashMap<Player, String> getSetters() {
-		return poiSetters;
-	}
-
-	public void addSetter(Player p, String d) {
-		poiSetters.put(p, d);
-	}
-
-	public void removeSetter(Player p) {
-		poiSetters.remove(p);
-	}
-
-	/**
-	 * Gets an instance of this plugin
-	 * 
-	 * @return The static instance of this plugin
-	 */
-	public static CyberionPlugin getInstance() {
-		return plugin;
-	}
-
-	public static Config getInternalConfig() {
-		return config;
-	}
-
-	public ListPOI getListPOI() {
-		return listPOI;
-	}
-
-	public FileConfiguration getPoiConfig() {
-		return this.poiConfig;
-	}
-
-	public FileConfiguration getVisitedConfig() {
-		return this.visitedConfig;
-	}
-	
 
 	private void createPoiConfig() {
 		poiConfigFile = new File(getDataFolder(), "poi.yml");
@@ -149,6 +126,42 @@ public class CyberionPlugin extends JavaPlugin {
 		}
 	}
 
+	public HashMap<Player, String> getSetters() {
+		return poiSetters;
+	}
+
+	public void addSetter(Player p, String d) {
+		poiSetters.put(p, d);
+	}
+
+	public void removeSetter(Player p) {
+		poiSetters.remove(p);
+	}
+
+	public ListPOI getListPOI() {
+		return listPOI;
+	}
+
+	public void setVisitedList(ListVisited visitedList) {
+		this.visitedList = visitedList;
+	}
+
+	public ListVisited getVisitedList() {
+		return visitedList;
+	}
+
+	public static Config getInternalConfig() {
+		return config;
+	}
+
+	public FileConfiguration getPoiConfig() {
+		return this.poiConfig;
+	}
+
+	public FileConfiguration getVisitedConfig() {
+		return this.visitedConfig;
+	}
+
 	public void savePoiConfig() {
 		try {
 			poiConfig.save(poiConfigFile);
@@ -165,12 +178,17 @@ public class CyberionPlugin extends JavaPlugin {
 		}
 	}
 
-	public ListVisited getVisitedList() {
-		return visitedList;
+	public Logger getLogger() {
+		return logger;
 	}
 
-	public void setVisitedList(ListVisited visitedList) {
-		this.visitedList = visitedList;
+	/**
+	 * Gets an instance of this plugin
+	 * 
+	 * @return The static instance of this plugin
+	 */
+	public static CyberionPlugin getInstance() {
+		return plugin;
 	}
 
 }

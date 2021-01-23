@@ -35,6 +35,7 @@ public class ListVisited {
 
 			ArrayList<String> al = new ArrayList<String>();
 			al.addAll((Collection<? extends String>) config.getList("players." + id + ".poiVisited"));
+			System.out.println(config.getList("players." + id + ".poiVisited"));
 
 			visitedMap.put(id, al);
 

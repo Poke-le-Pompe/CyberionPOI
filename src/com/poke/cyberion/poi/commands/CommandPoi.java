@@ -11,6 +11,11 @@ import com.poke.cyberion.poi.CyberionUtil;
 import com.poke.cyberion.poi.ListPOI;
 import com.poke.cyberion.poi.POI;
 
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Text;
+
 public class CommandPoi implements CommandExecutor {
 
 	@Override
@@ -48,6 +53,10 @@ public class CommandPoi implements CommandExecutor {
 				return setDescCommand(sender, args);
 			case "setActivation":
 				return setActivationCommand(sender, args);
+			case "toggleHolo":
+				return toggleHoloCommand(sender, args);
+			case "tp":
+				return tpCommand(sender, args);
 
 			default:
 				return false;
@@ -55,6 +64,112 @@ public class CommandPoi implements CommandExecutor {
 
 		}
 
+
+	}
+
+	private boolean tpCommand(CommandSender sender, String[] args) {
+		if (args.length > 0) {
+
+			CyberionPlugin plugin = CyberionPlugin.getInstance();
+
+			StringBuilder sb = new StringBuilder();
+
+			for (int i = 0; i < args.length; i++) {
+				sb.append(args[i]).append(" ");
+			}
+			String allArgs = sb.toString().trim();
+
+			// Check if the player actually has the permission required
+			if (sender.hasPermission(CyberionUtil.CYBERION_ADMIN_PERM)) {
+				if (sender instanceof Player) {
+					Player player = (Player) sender;
+
+					if (!plugin.getListPOI().nameExist(allArgs)) {
+						player.sendMessage(CyberionUtil.getMessageHeader('c') + "Ce nom de POI n'existe pas");
+						return true;
+					}
+
+					POI poi = plugin.getListPOI().getPOIbyName(allArgs);
+					player.teleport(poi.getLoc());
+
+					return true;
+				} else {
+					// Send the command sender a message telling them that only players can use this
+					// command
+					sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
+							CyberionPlugin.getInternalConfig().getOnlyPlayersMessage()));
+
+					// Return false since the command was not run successfully
+					return false;
+				}
+			} else {
+				// Send the command sender a message telling them that they don't have
+				// permission to use this command
+				sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
+						CyberionPlugin.getInternalConfig().getNoPermMessage()));
+
+				// Return false since the command was not run successfully
+				return false;
+			}
+		}
+
+		sender.sendMessage(CyberionUtil.getMessageHeader('c') + "Ajoutez un nom pour le POI");
+		return false;
+	}
+
+	private boolean toggleHoloCommand(CommandSender sender, String[] args) {
+		if (args.length > 0) {
+
+			CyberionPlugin plugin = CyberionPlugin.getInstance();
+
+			StringBuilder sb = new StringBuilder();
+
+			for (int i = 0; i < args.length; i++) {
+				sb.append(args[i]).append(" ");
+			}
+			String allArgs = sb.toString().trim();
+
+			// Check if the player actually has the permission required
+			if (sender.hasPermission(CyberionUtil.CYBERION_ADMIN_PERM)) {
+				if (sender instanceof Player) {
+					Player player = (Player) sender;
+
+					if (!plugin.getListPOI().nameExist(allArgs)) {
+						player.sendMessage(CyberionUtil.getMessageHeader('c') + "Ce nom de POI n'existe pas");
+						return true;
+					}
+
+					POI poi = plugin.getListPOI().getPOIbyName(allArgs);
+					boolean active = poi.toggleHolo();
+					if (active) {
+						sender.sendMessage(CyberionUtil.getMessageHeader('a')+"Hologramme activé pour le POI " + ChatColor.GOLD + poi.getName());
+					} else {
+						sender.sendMessage(CyberionUtil.getMessageHeader('c')+"Hologramme désativé pour le POI " + ChatColor.GOLD + poi.getName());
+					}
+
+					return true;
+				} else {
+					// Send the command sender a message telling them that only players can use this
+					// command
+					sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
+							CyberionPlugin.getInternalConfig().getOnlyPlayersMessage()));
+
+					// Return false since the command was not run successfully
+					return false;
+				}
+			} else {
+				// Send the command sender a message telling them that they don't have
+				// permission to use this command
+				sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
+						CyberionPlugin.getInternalConfig().getNoPermMessage()));
+
+				// Return false since the command was not run successfully
+				return false;
+			}
+		}
+
+		sender.sendMessage(CyberionUtil.getMessageHeader('c') + "Ajoutez un nom pour le POI");
+		return false;
 
 	}
 
@@ -84,16 +199,25 @@ public class CommandPoi implements CommandExecutor {
 						return false;
 					}
 					POI poi = listPoi.getPOIbyName(name);
-					
+
 					player.sendMessage(ChatColor.GOLD + "--------------------------------");
 					player.sendMessage(ChatColor.YELLOW +"Nom: " + ChatColor.LIGHT_PURPLE + poi.getName());
 					player.sendMessage(ChatColor.YELLOW +"Description: " + ChatColor.GREEN  + poi.getDesc());
 					player.sendMessage(ChatColor.YELLOW +"Message d'Activation: " + ChatColor.GREEN  + poi.getActivationMessage());
-					player.sendMessage(ChatColor.YELLOW +"Position: " + ChatColor.AQUA  + poi.getLoc().getBlockX() + " " + poi.getLoc().getBlockY() +" " + poi.getLoc().getBlockZ() + " (" + poi.getLoc().getWorld().getName() + ")" );
+					if (poi.getHoloActive()) {
+						player.sendMessage(ChatColor.YELLOW +"Hologramme: " + ChatColor.GREEN  + "Activé");
+					} else {
+						player.sendMessage(ChatColor.YELLOW +"Hologramme: " + ChatColor.RED  + "Désactivé");
+					}
+
+					TextComponent message = new TextComponent( ChatColor.YELLOW +"Position: " + ChatColor.AQUA  + poi.getLoc().getBlockX() + " " + poi.getLoc().getBlockY() +" " + poi.getLoc().getBlockZ() + " (" + poi.getLoc().getWorld().getName() + ") " + ChatColor.DARK_AQUA + "[TP]"  );
+					message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Se téléporter au POI")));
+					message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/poi tp " + poi.getName()));
+					player.spigot().sendMessage(message);
 					player.sendMessage(ChatColor.GOLD +"---------------------------------");
-					
+
 					return true;
-					
+
 				} else {
 					// Send the command sender a message telling them that only players can use this
 					sender.sendMessage(ChatColor.translateAlternateColorCodes('&',CyberionPlugin.getInternalConfig().getOnlyPlayersMessage()));
@@ -261,27 +385,44 @@ public class CommandPoi implements CommandExecutor {
 			if (sender instanceof Player) {
 				Player player = (Player) sender;
 
-				player.sendMessage(CyberionUtil.getMessageHeader() + "Liste des points d'intérêts: ");
+				player.sendMessage(ChatColor.GOLD + "--------------------------------");
 
 				for (POI poi : listPoi) {
-					player.sendMessage("#" + listPoi.indexOf(poi) + " : " + poi.getName() + " | " + poi.getLoc().getX()
-							+ " " + poi.getLoc().getY() + " " + poi.getLoc().getZ() + " ("
-							+ poi.getLoc().getWorld().getName() + ")");
+
+					TextComponent message = new TextComponent(
+					ChatColor.GOLD + "#" + listPoi.indexOf(poi) + " "
+					+ ChatColor.YELLOW + poi.getName() 
+					+ ChatColor.DARK_GRAY + " | " 
+					+ ChatColor.AQUA + poi.getLoc().getX() + " " + poi.getLoc().getY() + " " + poi.getLoc().getZ() + " ("+ poi.getLoc().getWorld().getName() + ") "  
+					);
+
+					
+					TextComponent tp = new TextComponent(ChatColor.DARK_AQUA + "[TP] " );
+					tp.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Se téléporter au POI")));
+					tp.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/poi tp " + poi.getName()));
+					
+					TextComponent info = new TextComponent(ChatColor.DARK_RED + "[INFO]" );
+					info.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Afficher les détails")));
+					info.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/poi info " + poi.getName()));
+					
+				    message.addExtra(tp);
+				    message.addExtra(info);
+					player.spigot().sendMessage(message);
 				}
 
-				player.sendMessage("--------------------------------------");
 
-				if (plugin.getVisitedList().getPlayerList(player) == null) {
-					player.sendMessage("Aucun POI Visité");
-				} else {
+				player.sendMessage(ChatColor.GOLD + "--------------------------------");
 
-					for (String id : plugin.getVisitedList().getPlayerList(player)) {
-						POI poi = listPoi.getPOIbyId(id);
-						player.sendMessage("#" + listPoi.indexOf(poi) + " : " + poi.getName() + " | "
-								+ poi.getLoc().getX() + " " + poi.getLoc().getY() + " " + poi.getLoc().getZ() + " ("
-								+ poi.getLoc().getWorld().getName() + ")");
-					}
-				}
+				/*
+				 * if (plugin.getVisitedList().getPlayerList(player) == null) {
+				 * player.sendMessage("Aucun POI Visité"); } else {
+				 * 
+				 * for (String id : plugin.getVisitedList().getPlayerList(player)) { POI poi =
+				 * listPoi.getPOIbyId(id); player.sendMessage("#" + listPoi.indexOf(poi) + " : "
+				 * + poi.getName() + " | " + poi.getLoc().getX() + " " + poi.getLoc().getY() +
+				 * " " + poi.getLoc().getZ() + " (" + poi.getLoc().getWorld().getName() + ")");
+				 * } }
+				 */
 
 
 				return true;
@@ -300,14 +441,14 @@ public class CommandPoi implements CommandExecutor {
 
 	private boolean bookCommand(CommandSender sender, String[] arg) {
 
-		if (sender.hasPermission(CyberionUtil.CYBERION_USER_PERM)) {
+		if (sender.hasPermission(CyberionUtil.CYBERION_USER_PERM) || sender.hasPermission(CyberionUtil.CYBERION_ADMIN_PERM)) {
 			if (sender instanceof Player) {
 				Player player = (Player) sender;
 				CyberionUtil.openListBookForPlayer(player);
 				return true;
 			}
 		}
-
+		sender.sendMessage(CyberionUtil.getMessageHeader('c') + "no perm");
 		return false;
 
 
@@ -398,8 +539,7 @@ public class CommandPoi implements CommandExecutor {
 
 		if (sender.hasPermission(CyberionUtil.CYBERION_ADMIN_PERM)) {
 
-			plugin.getListPOI().loadConfig();
-			plugin.getVisitedList().loadConfig();
+			plugin.reloadAllConfigs();
 
 			if (sender instanceof Player) {
 				Player player = (Player) sender;

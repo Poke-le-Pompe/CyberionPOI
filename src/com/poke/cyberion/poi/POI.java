@@ -11,6 +11,8 @@ public class POI {
 	private String desc;
 	private String activationMessage;
 	private Location loc;
+	private Hologram holo;
+	private boolean holoActive;
 
 	public POI(String name, Location loc) {
 		super();
@@ -19,6 +21,11 @@ public class POI {
 		this.desc = "";
 		this.activationMessage = "";
 		this.setUuid(UUID.randomUUID().toString().replace("-", "").substring(5, 15));
+		this.holo = new Hologram(this);
+		this.holoActive = true;
+		if (this.holoActive) {
+			this.holo.spawn();
+		}
 	}
 
 	public POI(String name, String desc, Location loc) {
@@ -28,6 +35,12 @@ public class POI {
 		this.loc = loc;
 		this.activationMessage = "";
 		this.setUuid(UUID.randomUUID().toString().replace("-", "").substring(5, 15));
+		this.holo = new Hologram(this);
+		this.holoActive = true;
+		if (this.holoActive) {
+			this.holo.spawn();
+		}
+
 	}
 
 	public POI(String id, String name, String desc, Location loc) {
@@ -37,6 +50,11 @@ public class POI {
 		this.loc = loc;
 		this.uuid = id;
 		this.activationMessage = "";
+		this.holo = new Hologram(this);
+		this.holoActive = true;
+		if (this.holoActive) {
+			this.holo.spawn();
+		}
 	}
 
 	public POI(String id, String name, String desc, Location loc, String actMess) {
@@ -46,6 +64,25 @@ public class POI {
 		this.loc = loc;
 		this.uuid = id;
 		this.activationMessage = actMess;
+		this.holo = new Hologram(this);
+		this.holoActive = true;
+		if (this.holoActive) {
+			this.holo.spawn();
+		}
+	}
+
+	public POI(String id, String name, String desc, Location loc, String actMess, boolean holoAct) {
+		super();
+		this.name = name;
+		this.desc = desc;
+		this.loc = loc;
+		this.uuid = id;
+		this.activationMessage = actMess;
+		this.holo = new Hologram(this);
+		this.holoActive = holoAct;
+		if (this.holoActive) {
+			this.holo.spawn();
+		}
 	}
 
 	public String getDesc() {
@@ -88,4 +125,27 @@ public class POI {
 		this.activationMessage = activationMessage;
 	}
 
+	public Hologram getHolo() {
+		return holo;
+	}
+	
+	public boolean getHoloActive() {
+		return this.holoActive;
+	}
+
+	public void setHoloActive(boolean act) {
+		this.holoActive = act;
+		if (this.holoActive) {
+			holo.spawn();
+		} else {
+			holo.despawn();
+		}
+		CyberionPlugin.getInstance().getListPOI().saveConfig();
+		
+	}
+
+	public boolean toggleHolo() {
+		this.setHoloActive(!holoActive);
+		return this.holoActive;
+	}
 }
