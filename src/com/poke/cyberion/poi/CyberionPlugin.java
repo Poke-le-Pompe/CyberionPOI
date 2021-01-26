@@ -89,11 +89,15 @@ public class CyberionPlugin extends JavaPlugin {
 	}
 
 	public void reloadAllConfigs() {
+		for (POI poi : listPOI) {
+			poi.getHolo().despawn();
+		}
 		createPoiConfig();
 		createVisitedConfig();
 		listPOI.loadConfig();
 		visitedList.loadConfig();
-		config.loadConfig();
+		reloadConfig();
+		config.reloadConfig();
 	}
 
 	private void createPoiConfig() {
