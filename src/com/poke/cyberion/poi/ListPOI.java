@@ -44,7 +44,6 @@ public class ListPOI implements Iterable<POI> {
 	public void saveConfig() {
 
 		FileConfiguration config = plugin.getPoiConfig();
-		config.set("poi", null);
 
 		for (POI poi : list) {
 			int id = list.indexOf(poi);
@@ -54,7 +53,7 @@ public class ListPOI implements Iterable<POI> {
 			config.set("poi." + id + ".description", poi.getDesc());
 			config.set("poi." + id + ".location", poi.getLoc());
 			config.set("poi." + id + ".activationMessage", poi.getActivationMessage());
-			config.set("poi." + id + ".hologram", poi.isHoloActive());
+			config.set("poi." + id + ".hologram", poi.getHoloActive());
 
 		}
 
@@ -65,11 +64,6 @@ public class ListPOI implements Iterable<POI> {
 		boolean ret = list.add(poi);
 		saveConfig();
 		return ret;
-	}
-	
-	public void add(int order, POI poi) {
-		list.add(order, poi);
-		saveConfig();
 	}
 
 	public POI remove(int iddel) {
@@ -157,10 +151,6 @@ public class ListPOI implements Iterable<POI> {
 			}
 		}
 		return null;
-	}
-	
-	public int size() {
-		return list.size();
 	}
 
 }

@@ -23,7 +23,7 @@ public class ListVisited {
 
 	@SuppressWarnings("unchecked")
 	public void loadConfig() {
-
+		
 		this.visitedMap = new HashMap<String, ArrayList<String>>();
 		FileConfiguration config = plugin.getVisitedConfig();
 
@@ -35,7 +35,7 @@ public class ListVisited {
 
 			ArrayList<String> al = new ArrayList<String>();
 			al.addAll((Collection<? extends String>) config.getList("players." + id + ".poiVisited"));
-			//System.out.println(config.getList("players." + id + ".poiVisited"));
+			System.out.println(config.getList("players." + id + ".poiVisited"));
 
 			visitedMap.put(id, al);
 
@@ -48,8 +48,6 @@ public class ListVisited {
 	public void saveConfig() {
 
 		FileConfiguration config = plugin.getVisitedConfig();
-		
-		config.set("players", null);
 
 		for (Map.Entry<String, ArrayList<String>> entry : visitedMap.entrySet()) {
 
@@ -62,42 +60,16 @@ public class ListVisited {
 		plugin.saveVisitedConfig();
 	}
 
-	public void addToPlayerList(Player p, String poiUuid) {
+	public void addToPlayerList(Player p, String s) {
 		String id = p.getUniqueId().toString();
 		if (visitedMap.containsKey(id)) {
-			visitedMap.get(id).add(poiUuid);
+			visitedMap.get(id).add(s);
 		} else {
 			ArrayList<String> list = new ArrayList<String>();
-			list.add(poiUuid);
+			list.add(s);
 			visitedMap.put(id, list);
 		}
 		saveConfig();
-	}
-
-	public void RemoveFromPlayerList(Player p, String poiUuid) {
-		String id = p.getUniqueId().toString();
-		if (visitedMap.containsKey(id)) {
-			ArrayList<String> list = visitedMap.get(id);
-			if (list.contains(poiUuid)){
-				list.remove(poiUuid);
-				saveConfig();
-			}
-
-		}
-
-	}
-
-	public void RemoveFromAll(String poiUuid) {
-		for (Map.Entry<String, ArrayList<String>> entry : visitedMap.entrySet()) {
-			ArrayList<String> list = entry.getValue();
-			if (list.contains(poiUuid)){
-				list.remove(poiUuid);
-			}
-			
-			saveConfig();
-			
-		}
-		
 	}
 
 	public ArrayList<String> getPlayerList(Player p) {

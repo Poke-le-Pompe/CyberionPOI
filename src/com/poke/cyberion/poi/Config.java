@@ -50,7 +50,7 @@ public final class Config {
 		// The string key is required to get the value, however the second provides a
 		// default in case it was unable to get a value
 		noPermMessage = config.getString(NO_PERM_KEY, "&4You do not have permission for that!");
-		onlyPlayersMessage = config.getString(ONLY_PLAYERS_KEY, "&4Only players can enter that command!");
+		onlyPlayersMessage = config.getString(ONLY_PLAYERS_KEY, "&4YOnly players can enter that command!");
 		
 		activeBookItem = config.getBoolean(LIST_BOOK_ITEM_ACTIVE, false);
 	}
@@ -71,7 +71,7 @@ public final class Config {
 		config.addDefault(LIST_BOOK_ITEM_ACTIVE, false);
 		
 		config.addDefault(NO_PERM_KEY, "&4You do not have permission for that!");
-		config.addDefault(ONLY_PLAYERS_KEY, "&4Only players can enter that command!");
+		config.addDefault(ONLY_PLAYERS_KEY, "&4YOnly players can enter that command!");
 
 		// Copy the defaults that we set back to the FileConfiguration object
 		config.options().copyDefaults(true);

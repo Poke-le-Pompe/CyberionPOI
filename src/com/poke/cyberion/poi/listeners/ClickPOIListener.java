@@ -57,10 +57,7 @@ public class ClickPOIListener implements Listener {
 				player.sendMessage(ChatColor.AQUA + ""  + ChatColor.MAGIC + "#" + ChatColor.RESET + " " + ChatColor.YELLOW + "Nouveau Point d'Intérêt découvert !" + ChatColor.AQUA + " "  + ChatColor.MAGIC + "#");
 				player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1f, 2f);
 				
-				if (!clickedPoi.getActivationMessage().isEmpty()) {
-					player.sendMessage(ChatColor.GREEN + clickedPoi.getActivationMessage());
-				}
-				
+				player.sendMessage(ChatColor.GREEN + clickedPoi.getActivationMessage());
 				plugin.getVisitedList().addToPlayerList(player, clickedPoi.getUuid());
 
 			}

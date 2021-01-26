@@ -38,9 +38,8 @@ public class SetPOIListener implements Listener {
 						CyberionUtil.getMessageHeader('c') + "Ce block est déjà un POI ! Choississez un autre bloc.");
 				return;
 			}
-			
-			String name = plugin.getSetters().get(player);
-			plugin.getListPOI().add(new POI(name, name, block.getLocation()));
+
+			plugin.getListPOI().add(new POI(plugin.getSetters().get(player), block.getLocation()));
 
 			player.sendMessage(CyberionUtil.getMessageHeader('a') + "Block défini en tant que POI");
 			plugin.removeSetter(player);

@@ -22,16 +22,12 @@ public class BookItemListener implements Listener {
 
 		ItemStack clicked = event.getCurrentItem();
 
-		if(clicked == null) {
-			return;
-		}
-
 		if (CyberionPlugin.getInternalConfig().isActiveBookItem() && clicked.equals(CyberionUtil.getBookItem())) {
 			event.setCancelled(true);
 		}
 
 	}
-
+	
 	@EventHandler
 	public void onPlayerDropBook(PlayerDropItemEvent event) {
 
@@ -46,14 +42,14 @@ public class BookItemListener implements Listener {
 
 	@EventHandler
 	public void onPlayerClickBook(PlayerInteractEvent event) {
-
+		
 		if (event.getHand() != EquipmentSlot.HAND || !event.hasItem()) {
 			return;
 		}
-
+		
 		ItemStack clicked = event.getItem();
 		ItemStack booklist = CyberionUtil.getBookItem();
-
+		
 		if(clicked.equals(booklist)) {
 
 			Player player = event.getPlayer();

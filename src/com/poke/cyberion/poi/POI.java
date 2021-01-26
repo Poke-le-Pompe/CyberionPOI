@@ -129,7 +129,7 @@ public class POI {
 		return holo;
 	}
 	
-	public boolean isHoloActive() {
+	public boolean getHoloActive() {
 		return this.holoActive;
 	}
 
