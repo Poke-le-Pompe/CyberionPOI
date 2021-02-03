@@ -9,6 +9,7 @@ public class POI {
 	private String name;
 	private String uuid;
 	private String desc;
+	private String category;
 	private String activationMessage;
 	private Location loc;
 	private Hologram holo;
@@ -84,6 +85,21 @@ public class POI {
 			this.holo.spawn();
 		}
 	}
+	
+	public POI(String id, String name, String desc, Location loc, String actMess, boolean holoAct, String cat) {
+		super();
+		this.name = name;
+		this.desc = desc;
+		this.loc = loc;
+		this.uuid = id;
+		this.activationMessage = actMess;
+		this.holo = new Hologram(this);
+		this.holoActive = holoAct;
+		if (this.holoActive) {
+			this.holo.spawn();
+		}
+		this.category = cat;
+	}
 
 	public String getDesc() {
 		return desc;
@@ -147,5 +163,13 @@ public class POI {
 	public boolean toggleHolo() {
 		this.setHoloActive(!holoActive);
 		return this.holoActive;
+	}
+
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
 	}
 }

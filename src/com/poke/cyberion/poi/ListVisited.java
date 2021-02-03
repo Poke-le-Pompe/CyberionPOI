@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
-
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
@@ -49,12 +46,13 @@ public class ListVisited {
 
 		FileConfiguration config = plugin.getVisitedConfig();
 		
+		
 		config.set("players", null);
 
 		for (Map.Entry<String, ArrayList<String>> entry : visitedMap.entrySet()) {
+			
 
-			config.set("players." + entry.getKey().toString() + ".username",
-					Bukkit.getPlayer(UUID.fromString(entry.getKey())).getName());
+			//config.set("players." + entry.getKey().toString() + ".username", Bukkit.getPlayer(UUID.fromString(entry.getKey())).getName());
 			config.set("players." + entry.getKey().toString() + ".poiVisited", entry.getValue());
 
 		}

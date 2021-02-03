@@ -30,13 +30,14 @@ public class ListPOI implements Iterable<POI> {
 
 			String uuid = config.getString("poi." + key + ".uuid");
 			String name = config.getString("poi." + key + ".name");
+			String cat = config.getString("poi." + key + ".category", null);
 			String desc = config.getString("poi." + key + ".description");
 			String activation = config.getString("poi." + key + ".activationMessage");
 			boolean holo = config.getBoolean("poi." + key + ".hologram", true);
 
 			Location loc = config.getLocation("poi." + key + ".location");
 
-			list.add(new POI(uuid, name, desc, loc, activation, holo));
+			list.add(new POI(uuid, name, desc, loc, activation, holo, cat));
 		}
 
 	}
@@ -51,6 +52,7 @@ public class ListPOI implements Iterable<POI> {
 
 			config.set("poi." + id + ".uuid", poi.getUuid());
 			config.set("poi." + id + ".name", poi.getName());
+			config.set("poi." + id + ".category", poi.getCategory());
 			config.set("poi." + id + ".description", poi.getDesc());
 			config.set("poi." + id + ".location", poi.getLoc());
 			config.set("poi." + id + ".activationMessage", poi.getActivationMessage());
@@ -108,6 +110,12 @@ public class ListPOI implements Iterable<POI> {
 	public void setActivation(String name, String act) {
 		POI poi = getPOIbyName(name);
 		poi.setActivationMessage(act);
+		saveConfig();
+	}
+	
+	public void setCategory(String name, String cat) {
+		POI poi = getPOIbyName(name);
+		poi.setCategory(cat);
 		saveConfig();
 	}
 	

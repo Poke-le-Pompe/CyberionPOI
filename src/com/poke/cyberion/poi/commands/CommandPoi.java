@@ -36,7 +36,7 @@ public class CommandPoi implements CommandExecutor {
 				j++;
 			}
 
-			switch (arg[0]) {
+			switch (arg[0].toLowerCase()) {
 			case "set":
 				return setCommand(sender, args);
 			case "remove":
@@ -49,20 +49,22 @@ public class CommandPoi implements CommandExecutor {
 				return reloadCommand(sender, args);
 			case "book":
 				return bookCommand(sender, args);
-			case "toggleBook":
+			case "togglebook":
 				return toggleItemBookCommand(sender, args);
-			case "setDesc":
+			case "setdesc":
 				return setDescCommand(sender, args);
-			case "setActivation":
+			case "setactivation":
 				return setActivationCommand(sender, args);
-			case "toggleHolo":
+			case "toggleholo":
 				return toggleHoloCommand(sender, args);
 			case "tp":
 				return tpCommand(sender, args);
 			case "order":
 				return orderCommand(sender, args);
-			case "debugHolo":
+			case "debugholo":
 				return debugHoloCommand(sender, args);
+			case "setcat":
+				return setCatCommand(sender, args);
 
 			default:
 				return false;
@@ -172,6 +174,7 @@ public class CommandPoi implements CommandExecutor {
 
 				player.sendMessage(ChatColor.GOLD + "--------------------------------");
 				player.sendMessage(ChatColor.YELLOW +"Nom: " + ChatColor.LIGHT_PURPLE + poi.getName());
+				player.sendMessage(ChatColor.YELLOW +"Categorie: " + ChatColor.DARK_AQUA + poi.getCategory());
 				player.sendMessage(ChatColor.YELLOW +"Description: " + ChatColor.GREEN  + poi.getDesc());
 				player.sendMessage(ChatColor.YELLOW +"Message d'Activation: " + ChatColor.GREEN  + poi.getActivationMessage());
 				if (poi.isHoloActive()) {
@@ -324,6 +327,55 @@ public class CommandPoi implements CommandExecutor {
 
 				listPoi.setDesc(name, desc);
 				player.sendMessage(CyberionUtil.getMessageHeader() + "Description du POI " + ChatColor.AQUA + name + ChatColor.YELLOW + " définie en " + ChatColor.AQUA + desc);
+				return true;
+
+			} else {
+				return false;
+			}
+
+		} else {
+			// Send the command sender a message telling them that only players can use this
+			sender.sendMessage(ChatColor.translateAlternateColorCodes('&', CyberionPlugin.getInternalConfig().getOnlyPlayersMessage()));
+
+			return false;
+		}
+
+	}
+	
+	private boolean setCatCommand(CommandSender sender, String[] args) {
+		if (!sender.hasPermission(CyberionUtil.CYBERION_ADMIN_PERM)) {
+			sender.sendMessage(ChatColor.translateAlternateColorCodes('&', CyberionPlugin.getInternalConfig().getNoPermMessage()));
+			return true;
+		}
+
+		CyberionPlugin plugin = CyberionPlugin.getInstance();
+		ListPOI listPoi = plugin.getListPOI();
+
+		if (sender instanceof Player) {
+			Player player = (Player) sender;
+
+
+			StringBuilder sb = new StringBuilder();
+			for (int i = 0; i < args.length; i++) {
+				sb.append(args[i]).append(" ");
+			}
+			String allArgs = sb.toString().trim();
+
+
+			if (allArgs.matches(".+ ; .+")) {
+				String name = allArgs.substring(0, allArgs.indexOf(';')-1);
+				String cat = allArgs.substring(allArgs.indexOf(';')+2);
+
+
+				//POI Inexistant
+				if (!listPoi.nameExist(name)) {
+					player.sendMessage(CyberionUtil.getMessageHeader('c') + "POI inexistant !");
+					return false;
+				}
+
+
+				listPoi.setCategory(name, cat);
+				player.sendMessage(CyberionUtil.getMessageHeader() + "Categorie du POI " + ChatColor.AQUA + name + ChatColor.YELLOW + " définie en " + ChatColor.AQUA + cat);
 				return true;
 
 			} else {

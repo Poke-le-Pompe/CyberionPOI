@@ -1,6 +1,9 @@
 package com.poke.cyberion.poi;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -116,53 +119,97 @@ public final class CyberionUtil {
 		int c_total = 0;
 		String text = "";
 
+		HashMap<String, ArrayList<POI>> hashCat = new HashMap<String, ArrayList<POI>>();
+		ArrayList<POI> listAutre = new ArrayList<POI>();
+
 		for (POI poi : listPoi) {
-
-			String checkMark = "";
-
-			// check if visited
-			if (listVisited.playerAlreadyVisited(p, poi)) {
-				c_visited++;
-				checkMark = "\u2714";
-				// checkMark = ChatColor.translateAlternateColorCodes('&', "\n&2");
+			String cat = poi.getCategory();
+			if (cat == null) {
+				listAutre.add(poi);
 			} else {
-				checkMark = "\u2716";
-				// checkMark = ChatColor.translateAlternateColorCodes('&', "\n&4");
+				if (hashCat.containsKey(cat)) {
+					hashCat.get(cat).add(poi);
+				} else {
+					ArrayList<POI> newlist = new ArrayList<POI>();
+					newlist.add(poi);
+					hashCat.put(cat, newlist);
+				}
 			}
-
-			String desc;
-			if (poi.getDesc().equals("")) {
-				desc = "No Description (" + poi.getName() + ")";
-			} else {
-				desc = poi.getDesc();
-			}
-
-			c_total++;
-			text = text + "\n" + checkMark + " " + desc;
 		}
+
+
+
+		List<String> keys = new ArrayList<>(hashCat.keySet());
+		Collections.sort(keys);
+
+		if (listAutre.size() > 0) {
+			hashCat.put("Autre", listAutre);
+			keys.add("Autre");
+		}
+
+		for (String cat : keys) {
+
+			text = text  +"\n\n" + "¤" + cat + ":";
+
+			for (POI poi : hashCat.get(cat)) {
+
+
+				String checkMark = "";
+
+				// check if visited
+				if (listVisited.playerAlreadyVisited(p, poi)) {
+					c_visited++;
+					checkMark = "\u2714";
+					// checkMark = ChatColor.translateAlternateColorCodes('&', "\n&2");
+				} else {
+					checkMark = "\u2716";
+					// checkMark = ChatColor.translateAlternateColorCodes('&', "\n&4");
+				}
+
+				String desc;
+				if (poi.getDesc().equals("")) {
+					desc = "No Description (" + poi.getName() + ")";
+				} else {
+					desc = poi.getDesc();
+				}
+
+				c_total++;
+				text = text + "\n" + checkMark + " " + desc;
+			}
+		}
+
+		text =  c_visited + "/" + c_total + " points trouvés" + text;
 		
-		text =" " + c_visited + "/" + c_total + " points trouvés\n" + text;
+		
 		String textPage = "";
 		int linecount = 0;
+		
+		
 		for (String line : getLines(text)) {
 
 			String rline = line;
 
-			rline = rline.replace("\u2714", ChatColor.GREEN + "\u2714" + ChatColor.BLACK);
+			if (!(linecount == 0 && rline.equals(" "))) {
 
-			rline = rline.replace("\u2716", ChatColor.RED + "\u2716" + ChatColor.BLACK);
 
-			textPage = textPage + rline + "\n";
-			linecount++;
+				rline = rline.replace("\u2714", ChatColor.GREEN + "\u2714" + ChatColor.BLACK);
 
-			if (linecount == 14 || getLines(text).indexOf(line) == getLines(text).size() - 1) {
+				rline = rline.replace("\u2716", ChatColor.RED + "\u2716" + ChatColor.BLACK);
 
-				BaseComponent[] page = new ComponentBuilder(textPage).create();
-				bookMeta.spigot().addPage(page);
-				// add the page to the meta
+				rline = rline.replace("¤", ChatColor.DARK_AQUA + "" + ChatColor.BOLD);
 
-				linecount = 0;
-				textPage = "";
+				textPage = textPage + rline + "\n";
+
+				linecount++;
+
+				if (linecount == 14 || getLines(text).indexOf(line) == getLines(text).size() - 1) {
+					BaseComponent[] page = new ComponentBuilder(textPage).create();
+					bookMeta.spigot().addPage(page);
+					// add the page to the meta
+
+					linecount = 0;
+					textPage = "";
+				}
 			}
 
 		}
