@@ -1,4 +1,4 @@
-package com.poke.cyberion.poi;
+package com.poke.cyberion.poi.objects;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;

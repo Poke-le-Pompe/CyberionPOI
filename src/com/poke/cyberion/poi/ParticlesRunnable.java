@@ -5,6 +5,8 @@ import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import com.poke.cyberion.poi.objects.POI;
+
 public class ParticlesRunnable extends BukkitRunnable {
 
 

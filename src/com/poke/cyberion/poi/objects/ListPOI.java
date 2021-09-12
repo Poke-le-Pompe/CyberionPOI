@@ -1,10 +1,12 @@
-package com.poke.cyberion.poi;
+package com.poke.cyberion.poi.objects;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
+
+import com.poke.cyberion.poi.CyberionPlugin;
 
 public class ListPOI implements Iterable<POI> {
 

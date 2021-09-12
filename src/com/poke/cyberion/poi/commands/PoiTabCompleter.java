@@ -1,4 +1,4 @@
-package com.poke.cyberion.poi;
+package com.poke.cyberion.poi.commands;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -7,6 +7,10 @@ import java.util.List;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
+
+import com.poke.cyberion.poi.CyberionPlugin;
+import com.poke.cyberion.poi.objects.ListPOI;
+import com.poke.cyberion.poi.objects.POI;
 
 public class PoiTabCompleter implements TabCompleter {
 

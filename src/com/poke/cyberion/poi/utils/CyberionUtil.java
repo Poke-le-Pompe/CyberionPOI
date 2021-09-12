@@ -1,4 +1,4 @@
-package com.poke.cyberion.poi;
+package com.poke.cyberion.poi.utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,24 +17,23 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 
+import com.poke.cyberion.poi.CyberionPlugin;
+import com.poke.cyberion.poi.objects.ListPOI;
+import com.poke.cyberion.poi.objects.ListVisited;
+import com.poke.cyberion.poi.objects.POI;
+
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 
 /**
- * A utility class with various static methods to provide a clean easy API We
- * are declaring it as final because there are only utility methods and we don't
- * want anyone accidentally extending this class
- * 
+ * A utility class with various static methods to provide a clean easy API
  * @author Poke
  */
 public final class CyberionUtil {
 
 	// Permission string
 	public static final String CYBERION_USER_PERM = "Cyberion.poi.user";
-
-	// Permission string
 	public static final String CYBERION_ADMIN_PERM = "Cyberion.poi.admin";
-
 
 	// List of all registered permissions
 	private static final ArrayList<Permission> perms = new ArrayList<>();
@@ -63,6 +62,7 @@ public final class CyberionUtil {
 		// developers access to the list
 		// For a permission we only need to have a string representing the key, however
 		// it's best to include the description and who has the permission by default
+		
 		// perms.add(new Permission(Cyberion_USE_PERM, "Allows player to use Cyberion",
 		// PermissionDefault.TRUE));
 		perms.add(new Permission(CYBERION_ADMIN_PERM, "Allows players to access to all the commands", PermissionDefault.OP));
@@ -81,11 +81,6 @@ public final class CyberionUtil {
 	 * Unregister all Cyberion permissions
 	 */
 	public static void unregisterPermissions() {
-		// Remove all permissions that we created
-		// Mainly used when disabling the plugin to prevent issues if the permissions
-		// are changed and the plugin is enabled again (possibly an update?)
-		// While using the /reload command is bad practice, many server owners will do
-		// so anyway and that can cause issues if we don't clean up properly
 		for (Permission perm : perms) {
 			Bukkit.getPluginManager().removePermission(perm);
 
@@ -107,13 +102,6 @@ public final class CyberionUtil {
 
 		ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
 		BookMeta bookMeta = (BookMeta) book.getItemMeta();
-
-		/*
-		 * BaseComponent[] page = new ComponentBuilder("Click me") .event(new
-		 * ClickEvent(ClickEvent.Action.OPEN_URL, "http://spigotmc.org")) .event(new
-		 * HoverEvent(HoverEvent.Action.SHOW_TEXT, new
-		 * Text("Go to the spigot website!"))) .create();
-		 */
 
 		int c_visited = 0;
 		int c_total = 0;
@@ -218,7 +206,6 @@ public final class CyberionUtil {
 		bookMeta.setTitle("Liste des Points d'Intérêt");
 		bookMeta.setAuthor("Club Minecraft");
 
-		// update the ItemStack with this new meta
 		book.setItemMeta(bookMeta);
 
 		p.openBook(book);
@@ -228,15 +215,10 @@ public final class CyberionUtil {
 	public static ItemStack getBookItem() {
 		ItemStack book = new ItemStack(Material.BOOK);
 		ItemMeta bookMeta = book.getItemMeta();
-		//CyberionPlugin plugin = CyberionPlugin.getInstance();
 
 		bookMeta.setDisplayName(ChatColor.AQUA + "" + ChatColor.BOLD + "Liste des Points d'Intérêt");
 		bookMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 		bookMeta.addEnchant(Enchantment.SILK_TOUCH, 1, true);
-
-		//ListVisited listVisited = plugin.getVisitedList();
-		//ListPOI listPoi = plugin.getListPOI();
-
 
 		book.setItemMeta(bookMeta);
 
@@ -245,8 +227,8 @@ public final class CyberionUtil {
 
 
 	private static ArrayList<String> getLines(String rawText) {
-		// Note that the only flaw with using MinecraftFont is that it can't account for
-		// some UTF-8 symbols, it will throw an IllegalArgumentException
+
+		
 		// final MinecraftFont font = new MinecraftFont();
 		// final int maxLineWidth = font.getWidth("LLLLLLLLLLLLLLLLLLL"); //113
 

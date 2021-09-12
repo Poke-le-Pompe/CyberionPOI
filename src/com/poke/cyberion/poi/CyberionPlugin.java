@@ -11,19 +11,24 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import com.poke.cyberion.poi.commands.CommandDiscord;
 import com.poke.cyberion.poi.commands.CommandPoi;
+import com.poke.cyberion.poi.commands.PoiTabCompleter;
 import com.poke.cyberion.poi.listeners.BookItemListener;
 import com.poke.cyberion.poi.listeners.ClickPOIListener;
 import com.poke.cyberion.poi.listeners.SetPOIListener;
+import com.poke.cyberion.poi.objects.ListPOI;
+import com.poke.cyberion.poi.objects.ListVisited;
+import com.poke.cyberion.poi.objects.POI;
+import com.poke.cyberion.poi.utils.CyberionUtil;
 
 public class CyberionPlugin extends JavaPlugin {
 
-	// Logger instance for logging debug messages and information about what the
-	// plugin is doing
+	// Logger instance for logging debug messages and information
 	private final Logger logger = Logger.getLogger("CyberionPOI");
 
-	// Our internal config object for storing the configuration options that server
-	// owners can set
+	// Our internal config object for storing the configuration options
 	private static Config config;
 
 	// An instance of this plugin for easy access
@@ -40,7 +45,7 @@ public class CyberionPlugin extends JavaPlugin {
 	private File visitedConfigFile;
 	private FileConfiguration visitedConfig;
 
-	// Lancé à l'activation
+
 	@Override
 	public void onEnable() {
 		plugin = this;
@@ -63,6 +68,8 @@ public class CyberionPlugin extends JavaPlugin {
 
 				plugin.getCommand("POI").setTabCompleter(new PoiTabCompleter());
 				plugin.getCommand("POI").setExecutor(new CommandPoi());
+				
+				plugin.getCommand("discord").setExecutor(new CommandDiscord());
 
 				plugin.getServer().getPluginManager().registerEvents(new SetPOIListener(), plugin);
 				plugin.getServer().getPluginManager().registerEvents(new ClickPOIListener(), plugin);
@@ -78,7 +85,6 @@ public class CyberionPlugin extends JavaPlugin {
 
 	}
 
-	// Lancé à la désactivation
 	@Override
 	public void onDisable() {
 		CyberionUtil.unregisterPermissions();

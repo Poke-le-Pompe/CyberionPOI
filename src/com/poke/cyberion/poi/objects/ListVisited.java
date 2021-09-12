@@ -1,4 +1,4 @@
-package com.poke.cyberion.poi;
+package com.poke.cyberion.poi.objects;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+
+import com.poke.cyberion.poi.CyberionPlugin;
 
 public class ListVisited {
 

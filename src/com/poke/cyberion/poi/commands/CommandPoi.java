@@ -10,9 +10,9 @@ import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 
 import com.poke.cyberion.poi.CyberionPlugin;
-import com.poke.cyberion.poi.CyberionUtil;
-import com.poke.cyberion.poi.ListPOI;
-import com.poke.cyberion.poi.POI;
+import com.poke.cyberion.poi.objects.ListPOI;
+import com.poke.cyberion.poi.objects.POI;
+import com.poke.cyberion.poi.utils.CyberionUtil;
 
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;

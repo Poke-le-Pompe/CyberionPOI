@@ -9,8 +9,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
 import com.poke.cyberion.poi.CyberionPlugin;
-import com.poke.cyberion.poi.CyberionUtil;
-import com.poke.cyberion.poi.POI;
+import com.poke.cyberion.poi.objects.POI;
+import com.poke.cyberion.poi.utils.CyberionUtil;
 
 public class SetPOIListener implements Listener {
 

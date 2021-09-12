@@ -11,9 +11,9 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
 import com.poke.cyberion.poi.CyberionPlugin;
-import com.poke.cyberion.poi.ListPOI;
-import com.poke.cyberion.poi.ListVisited;
-import com.poke.cyberion.poi.POI;
+import com.poke.cyberion.poi.objects.ListPOI;
+import com.poke.cyberion.poi.objects.ListVisited;
+import com.poke.cyberion.poi.objects.POI;
 
 public class ClickPOIListener implements Listener {
 

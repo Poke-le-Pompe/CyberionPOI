@@ -1,8 +1,10 @@
-package com.poke.cyberion.poi;
+package com.poke.cyberion.poi.objects;
 
 import java.util.UUID;
 
 import org.bukkit.Location;
+
+import com.poke.cyberion.poi.CyberionPlugin;
 
 public class POI {
 

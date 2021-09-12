@@ -13,7 +13,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import com.poke.cyberion.poi.CyberionPlugin;
-import com.poke.cyberion.poi.CyberionUtil;
+import com.poke.cyberion.poi.utils.CyberionUtil;
 
 public class BookItemListener implements Listener {
 

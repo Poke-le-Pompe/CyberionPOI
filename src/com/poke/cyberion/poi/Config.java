@@ -2,30 +2,18 @@ package com.poke.cyberion.poi;
 
 import org.bukkit.configuration.file.FileConfiguration;
 
-/**
- * An internal config class used to store all variables from the plugin's
- * FileConfiguration Storing the variables in an object like this is a much more
- * efficient method than constantly accessing the config.yml
- */
+
+  //An internal config class used to store all variables from the plugin
+ 
 public final class Config {
 
 	// Keys for accessing information in this plugin's FileConfiguration
 	// We are saving these to avoid "Magic Values"
-	// What that means is that instead of directly inputing the keys every time we
-	// want to access the FileConfiguration,
-	// we use these constant values to ensure no typos as well as clarity. If a key
-	// needs to be changed, it only needs to be updated in one place
-	// In the FileConfiguration, a period '.' represents a break,
-	// therefore the string after the period is a ConfigurationSection "underneath"
-	// ConfigurationSection represented by the string before the period
 	public static final String NO_PERM_KEY = "locale.noperm";
-
-
 	public static final String ONLY_PLAYERS_KEY = "locale.onlyplayers";
 	public static final String LIST_BOOK_ITEM_ACTIVE = "general.list_book_item";
 
 	// Message strings
-	// We are going to use these to store the messages from the FileConfiguration
 	private String noPermMessage, invalidPlayerMessage, onlyPlayersMessage, configReloadedMessage;
 	private boolean activeBookItem;
 
@@ -43,12 +31,9 @@ public final class Config {
 	 * FileConfiguration to our internal variables
 	 */
 	public void loadConfig() {
-		// Get this plugin's FileConfiguration object
 		FileConfiguration config = CyberionPlugin.getInstance().getConfig();
 
 		// Load all the values from the FileConfiguration into our internal config
-		// The string key is required to get the value, however the second provides a
-		// default in case it was unable to get a value
 		noPermMessage = config.getString(NO_PERM_KEY, "&4You do not have permission for that!");
 		onlyPlayersMessage = config.getString(ONLY_PLAYERS_KEY, "&4Only players can enter that command!");
 		
@@ -58,11 +43,8 @@ public final class Config {
 	/**
 	 * Set default FileConfiguration This will create the file if it doesn't exist
 	 * This will also setup any default values and write them to the config.yml file
-	 * if they are missing You may have seen people using saveDefaultConfig() to
-	 * copy a config.yml file from the plugin jar, however I personally don't like
-	 * this method because if we add values to the config then they won't be copied
-	 * over if the config.yml file already exists
-	 */
+	 * if they are missing
+	 **/
 	public void setDefaults() {
 		// Get this plugin's FileConfiguration object
 		FileConfiguration config = CyberionPlugin.getInstance().getConfig();
@@ -80,33 +62,21 @@ public final class Config {
 		CyberionPlugin.getInstance().saveConfig();
 	}
 
-	/**
-	 * Save the FileConfiguration Currently unused in our plugin but can be useful
-	 * if values can be updated from in game or if another plugin updates the values
-	 * It's often easier to create these methods in the beginning so they already
-	 * exist if we need them in the future For example if we add a way to change the
-	 * config in game we already have an easy way to save their changes
-	 */
+	
 	public void saveConfig() {
-		// Get this plugin's FileConfiguration object
 		FileConfiguration config = CyberionPlugin.getInstance().getConfig();
 
 		// Save any updated values from our internal config to the FileConfiguration
-		// object
 		config.set(LIST_BOOK_ITEM_ACTIVE, activeBookItem);
 		
 		config.set(NO_PERM_KEY, noPermMessage);
 		config.set(ONLY_PLAYERS_KEY, onlyPlayersMessage);
 
-		// We always need to remember to save the plugin's updated FileConfiguration
-		// object to write to file
 		CyberionPlugin.getInstance().saveConfig();
 	}
 
 	/**
-	 * Reloads the config Currently does nothing more than loadConfig() Can be used
-	 * in some situations if any specific actions are required to unload config
-	 * before loading values again
+	 * Reloads the config 
 	 */
 	public void reloadConfig() {
 		loadConfig();
